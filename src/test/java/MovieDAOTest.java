@@ -2,6 +2,7 @@ import dao.MovieDAO;
 import db.DatabaseConnection;
 import model.Director;
 import model.Movie;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -19,12 +20,20 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MovieDAOTest {
 
+    private Connection connectionMock;
+    private PreparedStatement statementMock;
+    private ResultSet resultSetMock;
+
+    @BeforeEach
+    public void init() {
+        connectionMock = mock(Connection.class);
+        statementMock = mock(PreparedStatement.class);
+        resultSetMock = mock(ResultSet.class);
+    }
+
     @Test
     void findRecentMovies_ReturnsMovies() throws SQLException {
         try (MockedStatic<DatabaseConnection> mocked = mockStatic(DatabaseConnection.class)) {
-            Connection connectionMock = mock(Connection.class);
-            PreparedStatement statementMock = mock(PreparedStatement.class);
-            ResultSet resultSetMock = mock(ResultSet.class);
 
             mocked.when(DatabaseConnection::getConnection).thenReturn(connectionMock);
             when(connectionMock.prepareStatement(anyString())).thenReturn(statementMock);
@@ -64,9 +73,6 @@ class MovieDAOTest {
     void deleteMoviesOlderThan_ExecutesDelete() throws SQLException {
         try (MockedStatic<DatabaseConnection> mocked = mockStatic(DatabaseConnection.class)) {
 
-            Connection connectionMock = mock(Connection.class);
-            PreparedStatement statementMock = mock(PreparedStatement.class);
-
             mocked.when(DatabaseConnection::getConnection).thenReturn(connectionMock);
             when(connectionMock.prepareStatement(anyString())).thenReturn(statementMock);
             when(statementMock.executeUpdate()).thenReturn(5);
@@ -85,9 +91,6 @@ class MovieDAOTest {
     void findRecentMovies_WhenNoResults_ReturnsEmptyList() throws SQLException {
         try (MockedStatic<DatabaseConnection> mocked = mockStatic(DatabaseConnection.class)) {
 
-            Connection connectionMock = mock(Connection.class);
-            PreparedStatement statementMock = mock(PreparedStatement.class);
-            ResultSet resultSetMock = mock(ResultSet.class);
 
             mocked.when(DatabaseConnection::getConnection).thenReturn(connectionMock);
             when(connectionMock.prepareStatement(anyString())).thenReturn(statementMock);
@@ -107,9 +110,6 @@ class MovieDAOTest {
     @Test
     void deleteMoviesOlderThan_WhenNoRowsAffected_ReturnsZero() throws SQLException {
         try (MockedStatic<DatabaseConnection> mocked = mockStatic(DatabaseConnection.class)) {
-
-            Connection connectionMock = mock(Connection.class);
-            PreparedStatement statementMock = mock(PreparedStatement.class);
 
             mocked.when(DatabaseConnection::getConnection).thenReturn(connectionMock);
             when(connectionMock.prepareStatement(anyString())).thenReturn(statementMock);
